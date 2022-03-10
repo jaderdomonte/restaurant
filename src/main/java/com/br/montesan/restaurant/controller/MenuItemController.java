@@ -3,6 +3,8 @@ package com.br.montesan.restaurant.controller;
 import com.br.montesan.restaurant.dto.MenuItemDto;
 import com.br.montesan.restaurant.entity.Product;
 import com.br.montesan.restaurant.service.MenuItemService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +37,11 @@ public class MenuItemController {
         return ResponseEntity.ok(service.isValid(prdId));
     }
 
-    @PutMapping("/{prdId}/{status}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Status changed successfully."),
+            @ApiResponse(code = 412, message = "Status could not be changed because something went wrong.")
+    })
+    @PutMapping(value = "/{prdId}/{status}", produces = "application/json")
     public ResponseEntity<MenuItemDto> changeStatus(@PathVariable("prdId") Long prdId,
                                           @PathVariable("status") Long status){
         MenuItemDto menuItem = service.changeStatus(prdId, status);
