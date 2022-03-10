@@ -1,14 +1,14 @@
 package com.br.montesan.restaurant.service;
 
 import com.br.montesan.restaurant.dto.MenuItemDto;
+import com.br.montesan.restaurant.entity.Product;
 import com.br.montesan.restaurant.exceptions.StatusChangeException;
 import com.br.montesan.restaurant.repository.ProductRepository;
-import com.br.montesan.restaurant.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,16 +16,17 @@ public class MenuItemService {
 
     private final ProductRepository repository;
 
-    public List<Product> listAll(){
-        return repository.findAll();
+    public List<MenuItemDto> listAll(){
+        return repository.findAll().stream().map(pro -> pro.toDto()).collect(Collectors.toList());
     }
 
-    public Product getProduct(Long prdId){
-        return repository.findById(prdId).orElse(null);
+    public MenuItemDto getMenuItem(Long prdId){
+        Product product = getProduct(prdId);
+        return product.toDto();
     }
 
     public MenuItemDto changeStatus(Long prdId, Long status) {
-        Product product = repository.findById(prdId).orElseThrow(() -> new StatusChangeException("This product does not exists."));
+        Product product = getProduct(prdId);
 
         if(isValid(product)){
             product.getStatus().setStatus(status);
@@ -37,6 +38,10 @@ public class MenuItemService {
         return product.toDto();
     }
 
+    private Product getProduct(Long prdId) {
+        return repository.findById(prdId).orElseThrow(() -> new StatusChangeException("This Menu Item does not exists."));
+    }
+
     protected String getMessage(Product product) {
         StringBuilder message = new StringBuilder();
         message.append("It is not possible change the status of Menu Item ")
@@ -46,12 +51,6 @@ public class MenuItemService {
     }
 
     public boolean isValid(Product product) {
-        return product.getType().isValid(product.getChildren());
-    }
-
-    public boolean isValid(Long prdId) {
-        Product product = repository.findById(prdId).orElse(null);
-
         return product.getType().isValid(product.getChildren());
     }
 }

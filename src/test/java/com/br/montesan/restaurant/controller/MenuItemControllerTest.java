@@ -9,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -21,6 +24,24 @@ class MenuItemControllerTest {
 
     @Mock
     private MenuItemService menuItemService;
+
+    @Test
+    void listProducts_When_existsMenuItems_Then_shouldReturnMenuItemsAndHttp200_Test(){
+        doReturn(new ArrayList<>()).when(menuItemService).listAll();
+
+        ResponseEntity<List<MenuItemDto>> response = menuItemController.listProducts();
+
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
+    void getProduct_When_existsMenuItem_Then_shouldReturnMenuItemAndHttp200_Test(){
+        doReturn(MenuItemDto.builder().build()).when(menuItemService).getMenuItem(anyLong());
+
+        ResponseEntity<MenuItemDto> response = menuItemController.getProduct(1L);
+
+        assertEquals(200, response.getStatusCode().value());
+    }
 
     @Test
     void changeStatus_When_componentStatusIsValid_Then_shouldChangeStatusAndReturnHttp200_Test(){

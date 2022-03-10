@@ -22,19 +22,19 @@ public class MenuItemController {
 
     private final MenuItemService service;
 
-    @GetMapping
-    public ResponseEntity<List<Product>> listProducts(){
+    @ApiResponse(code = 200, message = "List all Menu Items.")
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<List<MenuItemDto>> listProducts(){
         return ResponseEntity.ok(service.listAll());
     }
 
-    @GetMapping("/{prdId}")
-    public ResponseEntity<Product> getProduct(@PathVariable("prdId") Long prdId){
-        return ResponseEntity.ok(service.getProduct(prdId));
-    }
-
-    @GetMapping("/validate/{prdId}")
-    public ResponseEntity<Boolean> isValid(@PathVariable("prdId") Long prdId){
-        return ResponseEntity.ok(service.isValid(prdId));
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return a Menu Item by its id."),
+            @ApiResponse(code = 412, message = "Menu Item does not exists.")
+    })
+    @GetMapping(value = "/{prdId}", produces = "application/json")
+    public ResponseEntity<MenuItemDto> getProduct(@PathVariable("prdId") Long prdId){
+        return ResponseEntity.ok(service.getMenuItem(prdId));
     }
 
     @ApiResponses(value = {

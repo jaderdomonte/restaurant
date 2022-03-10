@@ -1,5 +1,6 @@
 package com.br.montesan.restaurant.service;
 
+import com.br.montesan.restaurant.dto.MenuItemDto;
 import com.br.montesan.restaurant.entity.Product;
 import com.br.montesan.restaurant.entity.ProductComponent;
 import com.br.montesan.restaurant.entity.ProductComponentId;
@@ -15,12 +16,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -36,6 +39,25 @@ class MenuItemServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+
+    @Test
+    void listAll_test(){
+        doReturn(new ArrayList<>()).when(productRepository).findAll();
+
+        List<MenuItemDto> menuItemDtos = menuItemService.listAll();
+
+        assertNotNull(menuItemDtos);
+    }
+
+    @Test
+    void getMenuItem_test(){
+        doReturn(Optional.of(Product.builder().build())).when(productRepository).findById(anyLong());
+
+        MenuItemDto menuItem = menuItemService.getMenuItem(1L);
+
+        assertNotNull(menuItem);
+    }
 
     @Test
     void isValid_When_menuItemIsProduct_Then_returnTrue_test(){
