@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+
+server:
+  servlet:
+    context-path: /restaurant
+  port: 8081

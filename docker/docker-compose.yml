@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  restaurant-api:
+    build: ../.
+    image: jaderdomonte/restaurant
+    container_name: restaurant-api
+    ports:
+      - 8000:8081
+    depends_on:
+      - restaurant-db
+
+  restaurant-db:
+    container_name: restaurant-db
+    image: postgres:13.1
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD=restaurant
+      - POSTGRES_DB=restaurant
+    ports:
+      - 5433:5432
